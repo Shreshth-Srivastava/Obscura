@@ -21,11 +21,11 @@ declare module "next-auth" {
 
 // Alternate Approach
 
-/*declare module 'next-auth/jwt'{
+declare module 'next-auth/jwt'{
     interface JWT{
         _id?: string,
         isVerified?: boolean,
         isAcceptingMessages?: boolean,
         username?: string
     }
-}*/
+}
