@@ -16,10 +16,16 @@ export async function GET(request: Request){
             username: searchParams.get('username')
         }
         const result = UsernameQuerySchema.safeParse(queryParams)
-        // console.log(result)
+        // console.log("Checking username: ", result.data?.username);
+        // console.log("result.success: ", result.success);
+
         if(!result.success){
             const Err = e.treeifyError(result.error)
             const usernameErr = Err.properties?.username?.errors || []
+            // const usernameErr = result.error.format().username?._errors || []
+
+            // console.log("Error: ", Err);
+
             return Response.json({
                 success: false,
                 message: usernameErr?.length > 0 ? usernameErr.join(', ') : "Invalid query parameters"
@@ -45,7 +51,7 @@ export async function GET(request: Request){
         return Response.json({
             success: true,
             message: "Username is available",
-        }, {status: 400})
+        }, {status: 200})
 
     } catch (error) {
         console.error("Error checking username", error)
