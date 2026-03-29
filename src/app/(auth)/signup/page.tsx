@@ -57,7 +57,10 @@ const page = () => {
           setUsernameMsg(response.data.message);
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
-          console.log("Testing - Axios response: ", axiosError.response?.data.message);
+          console.log(
+            "Testing - Axios response: ",
+            axiosError.response?.data.message,
+          );
           setUsernameMsg(
             axiosError.response?.data.message ?? "Error checking username",
           );
@@ -127,7 +130,15 @@ const page = () => {
                     }}
                   />
                   {isCheckingUsername && <Loader2 className="animate-spin" />}
-                  {usernameMsg ? (<p className={`text-sm ${usernameMsg === "Username is available" ? 'text-green-500' : 'text-red-500'}`}>{usernameMsg}</p>) : ('')}
+                  {usernameMsg ? (
+                    <p
+                      className={`text-sm ${usernameMsg === "Username is available" ? "text-green-500" : "text-red-500"}`}
+                    >
+                      {usernameMsg}
+                    </p>
+                  ) : (
+                    ""
+                  )}
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
