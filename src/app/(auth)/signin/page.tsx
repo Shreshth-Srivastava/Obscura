@@ -39,8 +39,7 @@ const page = () => {
     setIsSubmitting(true);
     try {
       const result = await signIn('credentials', {
-        redirect: false,
-        identifier: data.identifier,
+        identifiers: data.identifier,
         password: data.password
       });
       if(result?.error){
@@ -64,7 +63,7 @@ const page = () => {
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
             Join Obscura
           </h1>
-          <p className="mb-4">Sign In to start your anonymus adventure</p>
+          <p className="mb-4">Sign In to start your anonymous adventure</p>
         </div>
         <form
           id="form-rhf-demo"
@@ -82,7 +81,7 @@ const page = () => {
                   </FieldLabel>
                   <Input
                     {...field}
-                    id="form-rhf-demo-username"
+                    id="form-rhf-demo-identifier"
                     aria-invalid={fieldState.invalid}
                     placeholder="Email/Username"
                     autoComplete="off"

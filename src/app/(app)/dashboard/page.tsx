@@ -15,12 +15,12 @@ import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { useCopyToClipboard } from 'usehooks-ts';
 
 const Dashboard = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
+  const [baseUrl, setBaseUrl] = useState('');
 
   const handleDeleteMsg = (msgId: string) => {
     setMessages(messages.filter((msg) => msg._id !== msgId))
@@ -34,6 +34,8 @@ const Dashboard = () => {
 
   const {register, watch, setValue} = form;
   const acceptMessages = watch('acceptMessages');
+
+  console.log("UserId: ", session?.user._id);
   
   const fetchAcceptMessage = useCallback(async ()=>{
     setIsSwitchLoading(true);
@@ -41,6 +43,7 @@ const Dashboard = () => {
       const response = await axios.get<ApiResponse>('/api/accept-messages');
       setValue('acceptMessages', response.data.isAcceptingMessages as boolean);
     } catch (error) {
+      console.log(error);
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(axiosError.response?.data.message || "Failed to fetch message settings");
     } finally {
@@ -75,6 +78,7 @@ const Dashboard = () => {
 
   useEffect(()=>{
     if(!session || !session.user) return;
+    setBaseUrl(`${window.location.protocol}//${window.location.host}`);
     fetchMessages();
     fetchAcceptMessage();
   }, [session, setValue, fetchAcceptMessage, fetchMessages]);
@@ -93,8 +97,8 @@ const Dashboard = () => {
     }
   }
 
-  const {username} = session?.user as User;
-  const baseUrl = `${window.location.protocol}//${window.location.host}`;
+  const username = session?.user?.username || "";
+  // const baseUrl = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseUrl}/u/${username}`;
 
   const useCopyToClipboard = () => {
@@ -105,7 +109,7 @@ const Dashboard = () => {
   }
 
   // TODO: Check its need
-  if(!session || !session.user) return <div>Please Login</div>;
+  // if(!session || !session.user) return <div>Please Login</div>;
 
   return (
     <div className='my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl'>
