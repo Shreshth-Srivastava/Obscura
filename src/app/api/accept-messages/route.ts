@@ -3,6 +3,7 @@ import { authOptions } from "../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { User } from 'next-auth'
+import mongoose from "mongoose";
 
 export async function POST(request: Request){
     await dbConnect();
@@ -22,8 +23,9 @@ export async function POST(request: Request){
         )
     }
 
-    const userId = user._id;
-    const {acceptMessages} = await request.json()
+    // const userId = user._id;
+    const userId = new mongoose.Types.ObjectId(user._id);
+    const {acceptMessages} = await request.json();
 
     try {
         const updatedUser = await UserModel.findByIdAndUpdate(
@@ -77,7 +79,7 @@ export async function GET(request: Request){
 
     const session = await getServerSession(authOptions);
     const user: User = session?.user as User;
-
+    
     if(!session || !user){
         return Response.json(
             {
@@ -90,7 +92,8 @@ export async function GET(request: Request){
         )
     }
 
-    const userId = user._id;
+    // const userId = user._id;
+    const userId = new mongoose.Types.ObjectId(user._id);
 
     try {
         const foundUser = await UserModel.findById(userId);
@@ -110,6 +113,7 @@ export async function GET(request: Request){
         return Response.json(
             {
                 success: true,
+                message: "Successfully retrieved user settings",
                 isAcceptingMessages: foundUser.isAcceptingMessage
             },
             {

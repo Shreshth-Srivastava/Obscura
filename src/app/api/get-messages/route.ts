@@ -10,6 +10,8 @@ export async function GET(request: Request){
     
     const session = await getServerSession(authOptions);
     const user: User = session?.user as User;
+    // console.log("UserId (Get-Messages-GET): ", user._id);
+
 
     if(!session || !user){
         return Response.json(
@@ -24,20 +26,24 @@ export async function GET(request: Request){
     }
 
     const userId = new mongoose.Types.ObjectId(user._id);
+    // console.log("UserId from Mongoose (Get-Messages-GET): ", user._id);
     
     try {
         const user = await UserModel.aggregate([
-            { $match: {id: userId} },
+            { $match: {_id: userId} },
             { $unwind: '$messages' },
             { $sort: {'messages.createdAt': -1} },
             { $group: {_id: '$_id', messages: {$push: '$messages'}} }
         ])
 
+        // console.log("User after pipeline (Get-Messages-GET): ", user)
+        // console.log(typeof user[0].messages[0])
+
         if(!user || user.length === 0){
             return Response.json(
                 {
                     success: false,
-                    message: "User not found",
+                    message: "User data not found",
                 },
                 {
                     status: 404
@@ -56,7 +62,7 @@ export async function GET(request: Request){
         )
 
     } catch (error) {
-        console.log("An unexpected error occured: ", error);
+        // console.log("An unexpected error occured: ", error);
         return Response.json(
             {
                 success: false,

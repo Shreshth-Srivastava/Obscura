@@ -44,10 +44,8 @@ const MsgCard = ({msg, onMsgDelete}: MsgCardProps) => {
     return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>
-          Card Description
-        </CardDescription>
+        <CardTitle>{msg.content}</CardTitle>
+        <br />
         <AlertDialog>
         <AlertDialogTrigger asChild>
             <Button variant="destructive"><X className="w-5 h-5" /></Button>

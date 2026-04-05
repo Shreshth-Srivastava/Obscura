@@ -35,15 +35,15 @@ const Dashboard = () => {
   const {register, watch, setValue} = form;
   const acceptMessages = watch('acceptMessages');
 
-  console.log("UserId: ", session?.user._id);
+  // console.log("UserId: ", session?.user._id);
   
-  const fetchAcceptMessage = useCallback(async ()=>{
+  const fetchAcceptMessage = useCallback(async () => {
     setIsSwitchLoading(true);
     try {
       const response = await axios.get<ApiResponse>('/api/accept-messages');
       setValue('acceptMessages', response.data.isAcceptingMessages as boolean);
     } catch (error) {
-      console.log(error);
+      console.log("fetchAcceptMessage Error: ", error);
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(axiosError.response?.data.message || "Failed to fetch message settings");
     } finally {
@@ -56,8 +56,9 @@ const Dashboard = () => {
     setIsSwitchLoading(false);
 
     try {
-      const response = await axios.get<ApiResponse>('/api/get-messages');
-      setMessages(response.data.messages || []);
+      const response = await axios.get('/api/get-messages');
+      // console.log("fetchMessages (success)", response);
+      setMessages(response.data.message || []);
 
       if(refresh){
         toast.success("Refreshed Messages", {
@@ -112,7 +113,7 @@ const Dashboard = () => {
   // if(!session || !session.user) return <div>Please Login</div>;
 
   return (
-    <div className='my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl'>
+    <div className='my-8 mx-4 md:mx-8 lg:mx-auto p-6 rounded w-full max-w-6xl'>
       <h1 className='text-4xl font-bold mb-4'>User Dashboard</h1>
       <div className="mb-4">
         <h2 className='text-lg font-semibold mb-2'>Copy Your Unique Link</h2>{' '}
